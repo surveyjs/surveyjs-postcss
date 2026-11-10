@@ -1,7 +1,9 @@
 const lineHeightSum = require("./rules/line-height-sum");
+const missedSemicolon = require("./rules/missed-semicolon");
 
 const rules = {
   "line-height-sum": lineHeightSum,
+  "missed-semicolon": missedSemicolon,
 };
 
 function plugin() {
