@@ -51,6 +51,30 @@ Correct: set the token as `line-height` and use `1lh` in the sum:
 
 The rule checks any custom property whose name contains `line-height`. Multiplying such a property is allowed, for example `calc(3 * var(--sjs2-line-height-x300))`. A product that contains one can also be an addend.
 
+### missed-semicolon
+
+postcss reports a missing `;` after a regular property, but not after a custom property, because a custom property value can hold almost anything. Without the `;`, the custom property swallows the next declaration: both variables break, and stricter parsers such as postcss 7 (cssnano@4, css-minimizer-webpack-plugin@1) fail with `Missed semicolon`.
+
+Incorrect:
+
+```css
+.cls {
+  --sd-padding-inline: 0
+    --sd-row-gap: var(--sjs2-spacing-x200);
+}
+```
+
+Correct:
+
+```css
+.cls {
+  --sd-padding-inline: 0;
+  --sd-row-gap: var(--sjs2-spacing-x200);
+}
+```
+
+The rule reports a custom property value that contains `--name:` anywhere, or `name:` at the beginning of a line. Colons inside parentheses, strings, `url()` and comments are allowed, so values such as `if(style(--size: big): 10px; else: 5px)` stay valid.
+
 ## Adding a rule
 
 1. Create `rules/<rule-name>.js`. Export a PostCSS plugin that reports problems with `decl.warn(result, message)` and does not modify the CSS.
